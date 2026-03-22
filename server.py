@@ -1,4 +1,4 @@
-import os, logging
+import os, logging, sys
 
 log_format = '%(asctime)s - %(levelname)s - %(filename)s@%(levelno)s - %(message)s'
 logging.basicConfig(
@@ -26,7 +26,9 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
-print(f'AI幻覺說沒有：{os.environ.get('ALLOW_FE_URLS}')')
+print("====== 環境變數檢查 ======", file=sys.stderr)
+print(f"抓到的 ALLOW_FE_URLS 是: '{os.environ.get('ALLOW_FE_URLS')}'", file=sys.stderr)
+print("=========================", file=sys.stderr)
 
 
 cors_config = {
