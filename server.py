@@ -26,6 +26,9 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
+print(f'AI幻覺說沒有：{os.environ.get('ALLOW_FE_URLS}')')
+
+
 cors_config = {
     r"/*":{
         "origins":os.environ.get('ALLOW_FE_URLS','*'),
