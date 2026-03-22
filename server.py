@@ -26,10 +26,9 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
-FE_urls = [os.environ.get('ALLOW_FE_URLS'),os.environ.get('DEV_URL')]
 cors_config = {
     r"/*":{
-        "origins":FE_urls,
+        "origins":os.environ.get('ALLOW_FE_URLS','*'),
         "methods":["GET","POST","PATCH","DELETE"],
         "supports_credentials":True,
         "max_age":86400
