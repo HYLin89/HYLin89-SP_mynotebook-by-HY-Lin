@@ -37,7 +37,7 @@ print(f"====== 安全過濾後的 Origin: '{safe_origin}' ======", file=sys.stde
 
 cors_config = {
     r"/*":{
-        "origins":os.environ.get('ALLOW_FE_URLS','*'),
+        "origins":safe_origin ,
         "methods":["GET","POST","PATCH","DELETE"],
         "supports_credentials":True,
         "max_age":86400
@@ -71,7 +71,7 @@ supabase: Client = create_client(
 )
 
 #web-socket for message functions
-socketio = SocketIO(app,cors_allowed_origins=os.environ.get('ALLOW_FE_URLS','*'))
+socketio = SocketIO(app,cors_allowed_origins=safe_origin)
 
 #mail server
 mail = Mail(app)
