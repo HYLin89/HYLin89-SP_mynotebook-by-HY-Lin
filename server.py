@@ -62,7 +62,7 @@ supabase: Client = create_client(
 )
 
 #web-socket for message functions
-socketio = SocketIO(app,cors_allowed_origins=FE_urls)
+socketio = SocketIO(app,cors_allowed_origins=os.environ.get('ALLOW_FE_URLS','*'))
 
 #mail server
 mail = Mail(app)
