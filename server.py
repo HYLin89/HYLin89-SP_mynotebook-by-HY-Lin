@@ -27,11 +27,8 @@ from dotenv import load_dotenv
 load_dotenv()
 
 raw_url = os.environ.get('ALLOW_FE_URLS', '')
-
-# 2. 【關鍵防呆】自動拔除網址最後面的斜線，避免比對失敗
 safe_origin = raw_url.rstrip('/') 
 
-# 3. 再印一次確認乾淨了
 print(f"====== 安全過濾後的 Origin: '{safe_origin}' ======", file=sys.stderr)
 
 
