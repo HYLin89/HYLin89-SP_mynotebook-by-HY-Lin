@@ -23,13 +23,10 @@ from flask_socketio import SocketIO, emit, join_room
 from flask_mail import Mail, Message
 from supabase import create_client,Client
 from dotenv import load_dotenv
-from gevent import monkey
-
-monkey.patch_all()
 
 load_dotenv()
 
-raw_url = os.environ.get('ALLOW_FE_URLS', '')
+raw_url = os.environ.get('ALLOW_FE_URLS')
 safe_origin = raw_url.rstrip('/') 
 
 print(f"====== 過濾後的 Origin: '{safe_origin}' ======", file=sys.stderr)
@@ -56,7 +53,7 @@ app.config['MAIL_USE_TLS'] = True
 app.config['MAIL_USERNAME'] = os.environ.get("MAIL_ADDR")
 app.config['MAIL_PASSWORD'] = os.environ.get("MAIL_PSW")
 app.config['MAIL_DEFAULT_SENDER'] = os.environ.get("MAIL_ADDR")
-app.config['DEBUG']= True
+# app.config['DEBUG']= True
 
 #limiter
 limiter = Limiter(app=app,key_func=get_remote_address)
@@ -71,7 +68,7 @@ supabase: Client = create_client(
 )
 
 #web-socket for message functions
-socketio = SocketIO(app,cors_allowed_origins=safe_origin,async_mode='gevent')
+socketio = SocketIO(app,cors_allowed_origins=safe_origin)
 
 #mail server
 mail = Mail(app)
