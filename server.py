@@ -33,9 +33,9 @@ print(f"====== 過濾後的 Origin: '{safe_origin}' ======", file=sys.stderr)
 
 
 cors_config = {
-    r"/*":{
+    r".*":{
         "origins":safe_origin ,
-        "methods":["GET","POST","PATCH","DELETE"],
+        # "methods":["GET","POST","PATCH","DELETE"],
         "supports_credentials":True,
         "max_age":86400
     }
