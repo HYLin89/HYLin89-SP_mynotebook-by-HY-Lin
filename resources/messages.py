@@ -36,7 +36,7 @@ class Message(Resource):
         user = AccountsModel.query.filter_by(account = current_user, deactivate = False, is_verified= True).first()
         if not user :
             status_code=404
-            response['msg'] = 'no such user'
+            response['msg'] = 'account not verified'
             return make_response(jsonify(response),status_code)
         
         article = ArticlesModel.query.join(AccountsModel).filter(
@@ -56,8 +56,8 @@ class Message(Resource):
 
         try:
             new_message = MessageModel(
-                sender = user.user_name,
-                receiver = article.author.user_name,
+                sender = user.account,
+                receiver = article.author.account,
                 article_id = id,
                 content = data,
                 parent_id = None
@@ -82,7 +82,7 @@ class Message(Resource):
                 socketio.emit(
                     'new_message',
                     {
-                        'user_name':user.user_name,
+                        'account':user.account,
                         'article':f'About: {article.title}',
                         'content':ws_content,
                         'timestamp':str(datetime.now(timezone.utc))
@@ -146,15 +146,10 @@ class Message(Resource):
             return make_response(jsonify(response),status_code)
         
         current_user = g.jwt_payload['account']
-        user = AccountsModel.query.filter_by(account = current_user, deactivate = False).first()
-        if not user:
-            status_code = 404
-            response['msg'] = 'user not exists'
-            return make_response(jsonify(response),status_code)
         
         message = MessageModel.query.filter(
             (MessageModel.id == msg_id) |(MessageModel.parent_id == msg_id),
-            MessageModel.receiver == user.user_name,
+            MessageModel.receiver == current_user,
             MessageModel.is_read == False
             ).all()
         if not message:
@@ -184,14 +179,9 @@ class Unreads(Resource):
     def get(self):
         response,status_code={},200
         current_user = g.jwt_payload['account']
-        user = AccountsModel.query.filter_by(account = current_user, deactivate = False).first()
-        if not user:
-            status_code = 404
-            response['msg'] = 'No such user'
-            return make_response(jsonify(response),status_code)
-        
+
         try:
-            message = MessageModel.query.filter_by(receiver=user.user_name, is_read = False).count()
+            message = MessageModel.query.filter_by(receiver=current_user, is_read = False).count()
             response = {
                 'msg':'success',
                 'unread_counts':message
@@ -240,7 +230,7 @@ class Unreads(Resource):
 
         try:
             new_message = MessageModel(
-                sender = user.user_name,
+                sender = current_user,
                 receiver = message.sender,
                 article_id = message.article.id,
                 content = data,
@@ -266,7 +256,7 @@ class Unreads(Resource):
                 socketio.emit(
                     'new_message',
                     {
-                        'user_name':user.user_name,
+                        'account':user.current_user,
                         'article':f'About: {message.article.title}',
                         'content':ws_content,
                         'timestamp':str(datetime.now(timezone.utc))
@@ -296,15 +286,10 @@ class Messages(Resource):
         page_is = arg.get('page')
 
         current_user = g.jwt_payload['account']
-        user = AccountsModel.query.filter_by(account = current_user, deactivate = False).first()
-        if not user:
-            status_code = 404
-            response['msg'] = 'user not exists'
-            return make_response(jsonify(response),status_code)
         
         try:
             thread_expr = func.coalesce(MessageModel.parent_id, MessageModel.id).label('thread_id')
-            sub = db.session.query(thread_expr, func.max(MessageModel.created_at).label('latest')).filter((MessageModel.receiver == user.user_name)|(MessageModel.sender == user.user_name)).group_by(thread_expr).subquery()
+            sub = db.session.query(thread_expr, func.max(MessageModel.created_at).label('latest')).filter((MessageModel.receiver == current_user)|(MessageModel.sender == current_user)).group_by(thread_expr).subquery()
             paginate_data = MessageModel.query.join(sub,(func.coalesce(MessageModel.parent_id,MessageModel.id) == sub.c.thread_id) & (MessageModel.created_at == sub.c.latest)).order_by(MessageModel.created_at.desc()).paginate(page=page_is, per_page=10, error_out=False, max_per_page=10)
             message_item = [{
                 'id':msg.id,

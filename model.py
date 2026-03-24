@@ -64,8 +64,8 @@ class TagsModel(db.Model):
 class MessageModel(db.Model):
     __tablename__='messages'
     id = db.Column(db.Integer, primary_key=True)
-    sender = db.Column(db.String(15),db.ForeignKey('accounts.user_name'), nullable=False)
-    receiver = db.Column(db.String(15),db.ForeignKey('accounts.user_name'), nullable=False)
+    sender = db.Column(db.String(15),db.ForeignKey('accounts.account'), nullable=False)
+    receiver = db.Column(db.String(15),db.ForeignKey('accounts.account'), nullable=False)
     article_id = db.Column(db.Integer,db.ForeignKey('articles.id'), nullable=False)
     content = db.Column(db.Text,nullable=False)
     is_read = db.Column(db.Boolean,default=False)
