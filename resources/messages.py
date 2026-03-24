@@ -215,7 +215,7 @@ class Unreads(Resource):
         user = AccountsModel.query.filter_by(account = current_user, deactivate = False, is_verified= True).first()
         if not user:
             status_code=404
-            response['msg'] = 'no such user'
+            response['msg'] = 'account not verified'
             return make_response(jsonify(response),status_code)
         
         message = MessageModel.query.filter(MessageModel.id == msg_id).first()
