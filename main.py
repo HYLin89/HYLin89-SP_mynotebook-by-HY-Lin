@@ -10,7 +10,7 @@ from resources.accounts import Register,Login,AccountVerifi,PSW,User,Avatar,Logo
 from resources.articles import Article,Articles,AllTags,Draft,Drafts,ContentImgs,CoverImgs
 from resources.messages import Message,Unreads,Messages
 from resources.bookmark import Bookmark,UserBookmarkID
-from resources.tknmanage import Clean
+from resources.tknmanage import Clean, CronJob
 from util.auth import is_blocked
 
 api=Api(app)
@@ -35,6 +35,7 @@ api.add_resource(Bookmark,'/api/v1/bookmark/<id>','/api/v1/bookmark/','/api/v1/b
 api.add_resource(UserBookmarkID,'/api/v1/bookmarks')
 api.add_resource(AllTags,'/api/v1/alltags')
 api.add_resource(Clean,'/api/v1/clean_tkn')
+api.add_resource(CronJob,'/api/v1/wake')
 
 logger = logging.getLogger(__name__)
 secret_key = os.environ.get('JWT_SECRET_KEY')

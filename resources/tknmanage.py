@@ -53,5 +53,21 @@ class Clean(Resource):
             response['msg']='error'
             logger.exception(f'伺服器清理錯誤>> {str(e)}',exc_info=True)
         return make_response(jsonify(response),status_code)
+    
+class CronJob(Resource):
+    @limiter.limit("60 per minutes")
+    def get(self):
+        response, status_code = {},200
+
+        secret = os.environ.get('CRON_AUTH_SECRETS')
+        source = request.headers.get('x-secrets')
+        if not source or source != secret:
+            status_code = 401
+            response['msg']='forbidden action'
+            return make_response(jsonify(response),status_code)
+        
+        response['msg'] = 'success'
+        return make_response(jsonify(response),status_code)
+
 
 
