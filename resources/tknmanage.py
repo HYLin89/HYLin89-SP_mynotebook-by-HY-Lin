@@ -29,7 +29,7 @@ def is_blocked(jti):
 
 #刪除過期token處理
 class Clean(Resource):
-    @limiter.limit("2 per 2 days")
+    @limiter.limit("5 per 1 days")
     def delete(self):
         response, status_code = {},200
 
