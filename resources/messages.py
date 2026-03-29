@@ -223,6 +223,10 @@ class Unreads(Resource):
             status_code=404
             response['msg'] = 'target not exists'
             return make_response(jsonify(response),status_code)
+        if message.parent_id:
+            reply_id = message.parent_id
+        else:
+            reply_id = msg_id
 
 
         try:
@@ -231,7 +235,7 @@ class Unreads(Resource):
                 receiver = message.sender,
                 article_id = message.article.id,
                 content = data,
-                parent_id = msg_id
+                parent_id = reply_id
             )
             db.session.add(new_message)
             db.session.commit()
