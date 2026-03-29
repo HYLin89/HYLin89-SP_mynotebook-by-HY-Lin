@@ -223,10 +223,7 @@ class Unreads(Resource):
             status_code=404
             response['msg'] = 'target not exists'
             return make_response(jsonify(response),status_code)
-        if message.receiver == current_user:
-            status_code=400
-            response['msg'] = 'invalid actions, message to your own articles are forbiddened'
-            return make_response(jsonify(response),status_code)
+
 
         try:
             new_message = MessageModel(
