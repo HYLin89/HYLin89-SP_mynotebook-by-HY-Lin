@@ -253,7 +253,7 @@ class Unreads(Resource):
                 socketio.emit(
                     'new_message',
                     {
-                        'account':user.current_user,
+                        'account':user.account,
                         'article':f'About: {message.article.title}',
                         'content':ws_content,
                         'timestamp':str(datetime.now(timezone.utc))
