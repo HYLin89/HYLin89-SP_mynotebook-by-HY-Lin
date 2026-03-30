@@ -39,7 +39,8 @@ class Bookmark(Resource):
             ArticlesModel.id == id,
             ArticlesModel.status == 'public',
             AccountsModel.deactivate == False,
-            ArticlesModel.deleted == False
+            ArticlesModel.deleted == False,
+            AccountsModel.account != current_user
             ).first()
         if not article :
             status_code = 404
