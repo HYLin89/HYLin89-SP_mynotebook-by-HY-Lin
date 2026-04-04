@@ -127,7 +127,7 @@ Python版本 3.10+
 為了確保 Flask-SocketIO 的即時通訊功能在生產環境中正常運作，**請勿**使用 Flask 內建的開發伺服器啟動。請在雲端平台的啟動指令設定如下：
 
 ```bash
-gunicorn --worker-class eventlet -w 1 --bind 0.0.0.0:$PORT main:app   
+gunicorn -b 0.0.0.0:$PORT -w 1 --threads 100 --timeout 60 main:app   
 ```
 # 架構設計 
 ## 背景排程 (參見 tknmanage.py)
